@@ -1,0 +1,44 @@
+---
+title: "tutorial"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{tutorial}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(logistic.regression)
+```
+
+To use the function `logistic_regression`:
+
+```{r}
+X <- cbind(rbinom(30,1,0.4),rnorm(30,3,1))
+y <- rbinom(30, 1, 0.45)
+logistic_regression(X,y)
+```
+
+Sample dataset for the logistic_regression() function
+```{r}
+data(mtcars)
+dat = subset(mtcars,select=c(mpg,drat,vs))
+```
+
+To compare the precision and efficiency of logistic_regression() function and glm() function
+```{r}
+data(mtcars)
+dat = subset(mtcars,select=c(mpg,drat,vs)) 
+X = cbind(dat$mpg,dat$drat)
+glm.result = as.vector(glm(vs~mpg+drat,data=dat,family = "binomial")$coefficients)
+logis.result = as.numeric(logistic_regression(X,dat$vs))
+all.equal(glm.result,logis.result)
+bench::mark(glm.result,logis.result)
+```
